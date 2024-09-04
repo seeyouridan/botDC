@@ -6,7 +6,7 @@ module.exports = {
 		.setDescription("Jikoshoukai / perkenalan diri"),
 	async execute(interaction) {
 		await interaction.reply(
-			"Si gadis tomboy yang semangatnya meletup-letup, hai semuanyaa, aku Zee 💖!"
+			"Si gadis tomboy yang semangatnya meletup-letup, hai semua, aku Zee 💖!"
 		);
 	},
 };

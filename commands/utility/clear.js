@@ -15,7 +15,8 @@ module.exports = {
 
 		if (jumlah < 1 || jumlah > 100) {
 			return interaction.reply({
-				content: "Kamu hanya bisa menghapus 1 hingga 100 pesan sekaligus.",
+				content:
+					"Kamu hanya bisa menghapus 1 hingga 100 pesan sekaligus dengan maksimal 14 hari.",
 				ephemeral: true,
 			});
 		}
@@ -23,12 +24,16 @@ module.exports = {
 		// Menghapus pesan
 		await interaction.channel
 			.bulkDelete(jumlah, true)
-			.then((deleted) =>
-				interaction.reply({
+			.then(async (deleted) => {
+				const reply = await interaction.reply({
 					content: `Berhasil menghapus ${deleted.size} pesan.`,
-					ephemeral: true,
-				})
-			)
+					ephemeral: false,
+				});
+
+				setTimeout(() => {
+					interaction.deleteReply();
+				}, 2000);
+			})
 			.catch((error) =>
 				interaction.reply({
 					content: `Terjadi kesalahan: ${error.message}`,

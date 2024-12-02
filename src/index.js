@@ -1,11 +1,13 @@
 require("dotenv").config({ path: "./.env" });
 
-const fs = require("node:fs");
-const path = require("node:path");
 const { Client, Collection, Events, GatewayIntentBits } = require("discord.js");
-const axios = require("axios");
 const { token } = require("../config.json");
 const { gameStatus } = require("./utils/gameStatus");
+
+const fs = require("node:fs");
+const path = require("node:path");
+
+const axios = require("axios");
 const handleChatSession = require("./utils/chatSession");
 
 const client = new Client({

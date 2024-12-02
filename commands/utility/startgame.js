@@ -2,7 +2,7 @@ const { SlashCommandBuilder } = require("discord.js");
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName("start")
+		.setName("startgame")
 		.setDescription("Mulai permainan kertas, gunting, batu"),
 	async execute(interaction, gameStatus) {
 		if (gameStatus.isPlaying) {

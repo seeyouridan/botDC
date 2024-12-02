@@ -6,6 +6,6 @@ module.exports = {
         .setDescription("Mulai Chat dengan oshi :D"),
     async execute(interaction) {
         global.chatSession = true;
-        await interaction.reply("Sesi chat dimulai!");
+        await interaction.reply("Sesi chat dimulai!\n Berikan pertanyaan yang jelas dengan Bahasa Inggris guna mempermudah BOT untuk mengerti pertanyanmu!");
     },
 };

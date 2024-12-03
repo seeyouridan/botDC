@@ -30,4 +30,4 @@ async function tesApi(messageContent) {
 	}
 }
 
-tesApi("how to show all data from table in mysql?\n");
+tesApi("siapa presiden indonesia sekarang?\n");

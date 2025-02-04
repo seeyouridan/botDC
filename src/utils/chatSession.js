@@ -1,4 +1,4 @@
-require("dotenv").config();
+require("dotenv").config({ path: "./.env" });
 
 const axios = require("axios");
 
@@ -58,7 +58,7 @@ const handleChatSession = async (message) => {
 				},
 				{
 					headers: {
-						Authorization: `Bearer ${"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"}`,
+						Authorization: `Bearer ${HF_API_KEY}`,
 					},
 				}
 			);

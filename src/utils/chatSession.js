@@ -1,6 +1,7 @@
 require("dotenv").config({ path: "./.env" });
-
 const axios = require("axios");
+
+const HF_API_KEY = process.env.HF_API_KEY;
 
 const handleChatSession = async (message) => {
 	if (message.author.bot) return;

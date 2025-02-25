@@ -1,4 +1,5 @@
 require("dotenv").config({ path: "./.env" });
+global.chatSession = false;
 
 const { Client, Collection, Events, GatewayIntentBits } = require("discord.js");
 const { token } = require("../config.json");

@@ -6,6 +6,9 @@ const HF_API_KEY = process.env.HF_API_KEY;
 const handleChatSession = async (message) => {
 	if (message.author.bot) return;
 
+	// Cek Sesi Chat
+	if (!global.chatSession) return;
+
 	// Custom Responses (Pertanyaan dan jawaban manual)
 	const userMessage = message.content.toLowerCase();
 	let botResponse;
@@ -73,7 +76,7 @@ const handleChatSession = async (message) => {
 	}
 
 	// berikan respon
-	await message.reply("Zee🦖 :", botResponse);
+	await message.reply(botResponse);
 };
 
 module.exports = handleChatSession;

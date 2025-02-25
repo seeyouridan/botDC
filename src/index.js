@@ -44,6 +44,11 @@ for (const folder of commandFolders) {
 
 client.once(Events.ClientReady, (readyClient) => {
 	console.log(`Haii, Zee disini💖!`);
+
+	readyClient.user.setPresence({
+		activities: [{ name: "JKT48's Playlist 🎧", type: 3 }],
+		status: "online",
+	});
 });
 
 client.on(Events.InteractionCreate, async (interaction) => {

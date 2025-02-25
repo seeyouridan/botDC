@@ -54,7 +54,7 @@ const handleChatSession = async (message) => {
 				{
 					inputs: message.content,
 					parameters: {
-						max_new_tokens: 500,
+						max_new_tokens: 2048,
 					},
 				},
 				{
@@ -64,7 +64,8 @@ const handleChatSession = async (message) => {
 				}
 			);
 
-			botResponse = hfResponse.data[0]?.generated_text || "Hmm, aku bingung menjawabnya.";
+			botResponse =
+				hfResponse.data[0]?.generated_text || "Hmm, aku bingung menjawabnya.";
 		} catch (error) {
 			console.error("Error saat memproses pesan AI:", error);
 			botResponse = "Maaf, aku tidak bisa menjawab itu sekarang.";
@@ -72,7 +73,7 @@ const handleChatSession = async (message) => {
 	}
 
 	// berikan respon
-	await message.reply(botResponse);
+	await message.reply("Zee🦖 :", botResponse);
 };
 
 module.exports = handleChatSession;

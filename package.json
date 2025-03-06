@@ -1,6 +1,6 @@
 {
 	"name": "botdc",
-	"version": "2.0.2",
+	"version": "2.0.4",
 	"description": "Multifunctional Bot Discord create using Discord.js",
 	"main": "src/index.js",
 	"scripts": {
@@ -15,6 +15,8 @@
 		"@huggingface/inference": "^2.8.1",
 		"axios": "^1.7.8",
 		"discord.js": "^14.15.3",
-		"dotenv": "^16.4.5"
+		"dotenv": "^16.4.5",
+		"play-dl": "^1.9.7",
+		"yt-search": "^2.12.1"
 	}
 }

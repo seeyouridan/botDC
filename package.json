@@ -1,10 +1,10 @@
 {
 	"name": "botdc",
-	"version": "1.4.12",
+	"version": "1.5.10",
 	"description": "Multifunctional Bot Discord create using Discord.js",
 	"main": "src/index.js",
 	"scripts": {
-		"start": "node src/index.js deploy-commands.js",
+		"start": "node src/index.js node deploy-commands.js",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"keywords": [],

@@ -67,12 +67,12 @@ client.on(Events.InteractionCreate, async (interaction) => {
 		console.error(error);
 		if (interaction.replied || interaction.deferred) {
 			await interaction.followUp({
-				content: "Error cok!",
+				content: "Error guys!",
 				ephemeral: true,
 			});
 		} else {
 			await interaction.reply({
-				content: "Error cok!",
+				content: "Error guys!",
 				ephemeral: true,
 			});
 		}

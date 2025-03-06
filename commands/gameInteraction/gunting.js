@@ -3,17 +3,17 @@ const { getBotChoice, determineWinner } = require("../../src/utils/gameUtils");
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName("kertas")
-		.setDescription("Pilih kertas dalam permainan"),
+		.setName("gunting")
+		.setDescription("Pilih gunting dalam permainan"),
 	async execute(interaction, gameStatus) {
 		if (!gameStatus.isPlaying) {
 			await interaction.reply(
-				"Permainan belum dimulai. Ketik /start untuk memulai permainan."
+				"Permainan belum dimulai. Ketik /mulaigame untuk memulai permainan."
 			);
 			return;
 		}
 
-		const playerChoice = "kertas";
+		const playerChoice = "gunting";
 		const botChoice = getBotChoice();
 		const result = determineWinner(playerChoice, botChoice);
 

@@ -1,6 +1,6 @@
 {
 	"name": "botdc",
-	"version": "1.5.11",
+	"version": "1.5.12",
 	"description": "Multifunctional Bot Discord create using Discord.js",
 	"main": "src/index.js",
 	"scripts": {

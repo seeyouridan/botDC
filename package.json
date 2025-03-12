@@ -1,6 +1,6 @@
 {
 	"name": "botdc",
-	"version": "2.0.4",
+	"version": "2.0.5",
 	"description": "Multifunctional Bot Discord create using Discord.js",
 	"main": "src/index.js",
 	"scripts": {
@@ -11,12 +11,15 @@
 	"author": "seeyouridan",
 	"license": "ISC",
 	"dependencies": {
+		"@discordjs/builders": "^1.10.1",
+		"@discordjs/opus": "^0.10.0",
+		"@discordjs/rest": "^2.4.3",
 		"@discordjs/voice": "^0.18.0",
 		"@huggingface/inference": "^2.8.1",
 		"axios": "^1.7.8",
+		"discord-api-types": "^0.37.119",
+		"discord-player": "^7.1.0",
 		"discord.js": "^14.15.3",
-		"dotenv": "^16.4.5",
-		"play-dl": "^1.9.7",
-		"yt-search": "^2.12.1"
+		"dotenv": "^16.4.5"
 	}
 }

@@ -1,4 +1,5 @@
 require("dotenv").config({ path: "./.env" });
+
 global.chatSession = false;
 
 const { Client, Collection, Events, GatewayIntentBits } = require("discord.js");
@@ -62,11 +63,6 @@ client.on(Events.InteractionCreate, async (interaction) => {
 	if (!interaction.isChatInputCommand()) return;
 
 	const command = interaction.client.commands.get(interaction.commandName);
-
-	if (!command) {
-		console.error(`Tidak ada Command ${interaction.commandName} dalam bot.`);
-		return;
-	}
 
 	try {
 		await command.execute(interaction, gameStatus);

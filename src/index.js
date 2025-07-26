@@ -1,19 +1,16 @@
 require("dotenv").config({ path: "./.env" });
 
-global.chatSession = false;
-
 const { Client, Collection, Events, GatewayIntentBits } = require("discord.js");
-const { token } = require("../config.json");
 const { gameStatus } = require("./utils/gameStatus");
+
+const DISCORD_BOT_TOKEN = process.env.DISCORD_BOT_TOKEN;
 
 const fs = require("node:fs");
 const path = require("node:path");
 
-const axios = require("axios");
-const handleChatSession = require("./utils/chatSession");
-
 const client = new Client({
 	intents: [
+		GatewayIntentBits.GuildMessageTyping,
 		GatewayIntentBits.Guilds,
 		GatewayIntentBits.GuildMessages,
 		GatewayIntentBits.MessageContent,
@@ -51,7 +48,7 @@ for (const filePath of commandFiles) {
 }
 
 client.once(Events.ClientReady, (readyClient) => {
-	console.log(`Haii, Zee disini💖!`);
+	console.log(`Haii, it's me azeeraa! 🎉`);
 
 	readyClient.user.setPresence({
 		activities: [{ name: "JKT48's Playlist 🎧", type: 3 }],
@@ -82,8 +79,4 @@ client.on(Events.InteractionCreate, async (interaction) => {
 	}
 });
 
-client.on("messageCreate", async (message) => {
-	await handleChatSession(message, global);
-});
-
-client.login(token);
+client.login(DISCORD_BOT_TOKEN);

@@ -6,7 +6,8 @@ module.exports = {
 		.setName("join")
 		.setDescription("Memasukan Bot ke dalam Voice Channel"),
 	async execute(interaction) {
-		const channel = interaction.member.voice.channel;
+		const member = await interaction.guild.members.fetch(interaction.user.id);
+		const channel = member.voice.channel;
 
 		if (!channel) {
 			return interaction.reply(
@@ -14,17 +15,17 @@ module.exports = {
 			);
 		}
 
-		const connection = joinVoiceChannel({
+		joinVoiceChannel({
 			channelId: channel.id,
 			guildId: interaction.guild.id,
 			adapterCreator: interaction.guild.voiceAdapterCreator,
-			// selfDeaf: true,
 		});
 
-		const reply = await interaction.reply({
+		await interaction.reply({
 			content: `✅ Bergabung ke voice channel: ${channel.name}`,
-			fetchReply: true,
 		});
+
+		const reply = await interaction.fetchReply();
 
 		setTimeout(() => {
 			reply.delete().catch(console.error);

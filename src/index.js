@@ -14,10 +14,31 @@ const client = new Client({
 		GatewayIntentBits.Guilds,
 		GatewayIntentBits.GuildMessages,
 		GatewayIntentBits.MessageContent,
+		GatewayIntentBits.GuildVoiceStates,
 	],
 });
 
 client.commands = new Collection();
+
+const { DisTube } = require("distube");
+const { SpotifyPlugin } = require("@distube/spotify");
+const { YtDlpPlugin } = require("@distube/yt-dlp");
+const { SoundCloudPlugin } = require("@distube/soundcloud");
+
+// client: instance dari Discord Client
+client.distube = new DisTube(client, {
+	leaveOnFinish: false,
+	leaveOnStop: false,
+	emitNewSongOnly: true,
+	youtubeDL: false,
+	plugins: [
+		new SpotifyPlugin({
+			emitEventsAfterFetching: true,
+		}),
+		new SoundCloudPlugin(),
+		new YtDlpPlugin({ update: true }),
+	],
+});
 
 const foldersPath = path.join(__dirname, "../commands");
 const getAllFiles = (dirPath, arrayOfFiles = []) => {
@@ -51,7 +72,7 @@ client.once(Events.ClientReady, (readyClient) => {
 	console.log(`Haii, it's me azeeraa! 🎉`);
 
 	readyClient.user.setPresence({
-		activities: [{ name: "JKT48's Playlist 🎧", type: 3 }],
+		activities: [{ name: "JKT48's Playlist 🎧", type: 2 }],
 		status: "online",
 	});
 });
@@ -62,7 +83,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
 	const command = interaction.client.commands.get(interaction.commandName);
 
 	try {
-		await command.execute(interaction, gameStatus);
+		await command.execute(interaction, interaction.client);
 	} catch (error) {
 		console.error(error);
 		if (interaction.replied || interaction.deferred) {
@@ -79,4 +100,6 @@ client.on(Events.InteractionCreate, async (interaction) => {
 	}
 });
 
-client.login(DISCORD_BOT_TOKEN);
+client.login(DISCORD_BOT_TOKEN).then(() => {
+	require("./utils/musicSystem")(client);
+});

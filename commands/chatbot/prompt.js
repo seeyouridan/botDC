@@ -12,7 +12,7 @@ module.exports = {
         .setRequired(true)),
     async execute(interaction) {
         // hanya menampilkan output pada user yang menggunakan command (tidak publik)
-        await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+        await interaction.deferReply({ ephemeral: true });
         queue.addItem(interaction);
     }
 };

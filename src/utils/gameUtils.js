@@ -4,21 +4,21 @@ function getBotChoice() {
 }
 
 function determineWinner(playerChoice, botChoice) {
-	if (playerChoice === botChoice) return "Kalo seri, berarti kita satu hati!🥰";
+	if (playerChoice === botChoice) return "draw";
 	if (
 		(playerChoice === "kertas" && botChoice === "batu") ||
 		(playerChoice === "batu" && botChoice === "gunting") ||
 		(playerChoice === "gunting" && botChoice === "kertas")
 	) {
-		return "Selamat yaa, kamu menang huhuu!🎉";
+		return "win";
 	}
-	if (
-		(playerChoice === "batu" && botChoice === "kertas") ||
-		(playerChoice === "kertas" && botChoice === "gunting") ||
-		(playerChoice === "gunting" && botChoice === "batu")
-	) {
-		return "Yeay, aku menang, semoga beruntung lain kali yaa!🤗";
-	}
+	return "lose";
 }
 
-module.exports = { getBotChoice, determineWinner };
+function getResultText(code) {
+	if (code === "win") return "Selamat yaa, kamu menang huhuu!🎉";
+	if (code === "draw") return "Kalo seri, berarti kita satu hati!🥰";
+	if (code === "lose") return "Hihi, kamu kalah, sayang banget, semoga beruntung lain kali yaa!🤗";
+}
+
+module.exports = { getBotChoice, determineWinner, getResultText };

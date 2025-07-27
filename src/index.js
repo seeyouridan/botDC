@@ -27,14 +27,12 @@ const { SoundCloudPlugin } = require("@distube/soundcloud");
 
 // client: instance dari Discord Client
 client.distube = new DisTube(client, {
-	leaveOnFinish: false,
-	leaveOnStop: false,
+	// leaveOnFinish: false,
+	// leaveOnStop: false,
 	emitNewSongOnly: true,
-	youtubeDL: false,
+	// youtubeDL: false,
 	plugins: [
-		new SpotifyPlugin({
-			emitEventsAfterFetching: true,
-		}),
+		new SpotifyPlugin(),
 		new SoundCloudPlugin(),
 		new YtDlpPlugin({ update: true }),
 	],

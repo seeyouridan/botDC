@@ -1,18 +1,52 @@
-const { SlashCommandBuilder, MessageFlags } = require("discord.js");
-
+const {
+	SlashCommandBuilder,
+	EmbedBuilder,
+	ActionRowBuilder,
+	ButtonBuilder,
+	ButtonStyle,
+} = require("discord.js");
 const Queue = require("../../src/utils/queue");
 const queue = new Queue();
 
 module.exports = {
-    data: new SlashCommandBuilder()
-        .setName('prompt')
-        .setDescription('Send a prompt to our uncensored llama2')
-        .addStringOption(option => option.setName('input')
-        .setDescription('The prompt to send')
-        .setRequired(true)),
-    async execute(interaction) {
-        // hanya menampilkan output pada user yang menggunakan command (tidak publik)
-        await interaction.deferReply({ ephemeral: true });
-        queue.addItem(interaction);
-    }
+	data: new SlashCommandBuilder()
+		.setName("prompt")
+		.setDescription("Kirim prompt ke LLM (deepseek-r1)")
+		.addStringOption((option) =>
+			option
+				.setName("input")
+				.setDescription("Isi prompt kamu di sini")
+				.setRequired(true)
+		),
+	async execute(interaction) {
+		await interaction.deferReply();
+
+		const botAvatar = interaction.client.user.displayAvatarURL({
+			dynamic: true,
+		});
+
+		const embed = new EmbedBuilder()
+			.setColor("#00C7FF")
+			.setTitle("🧠 Prompt Kamu Diterima!")
+			.setThumbnail(botAvatar)
+			.setDescription(
+				`Terima kasih sudah mengirimkan prompt ke **ZeeBot AI**!\n\n` +
+					`⏳ Prompt kamu akan diproses secepat mungkin.\n` +
+					`📬 Hasilnya akan dikirim ke **thread khusus** agar lebih rapi.\n\n` +
+					`Prompt dari: <@${interaction.user.id}>`
+			)
+			.setFooter({ text: "Powered by deepseek-r1:7b", iconURL: botAvatar })
+			.setTimestamp();
+
+		const row = new ActionRowBuilder().addComponents(
+			new ButtonBuilder()
+				.setLabel("🧾 Source Code")
+				.setStyle(ButtonStyle.Link)
+				.setURL("https://github.com/seeyouridan")
+		);
+
+		await interaction.editReply({ embeds: [embed], components: [row] });
+
+		queue.addItem(interaction);
+	},
 };

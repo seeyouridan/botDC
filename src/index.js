@@ -27,10 +27,7 @@ const { SoundCloudPlugin } = require("@distube/soundcloud");
 
 // client: instance dari Discord Client
 client.distube = new DisTube(client, {
-	// leaveOnFinish: false,
-	// leaveOnStop: false,
 	emitNewSongOnly: true,
-	// youtubeDL: false,
 	plugins: [
 		new SpotifyPlugin(),
 		new SoundCloudPlugin(),
@@ -87,12 +84,12 @@ client.on(Events.InteractionCreate, async (interaction) => {
 		if (interaction.replied || interaction.deferred) {
 			await interaction.followUp({
 				content: "Error guys!",
-				ephemeral: true,
+				flags: 1 << 6,
 			});
 		} else {
 			await interaction.reply({
 				content: "Error guys!",
-				ephemeral: true,
+				flags: 1 << 6,
 			});
 		}
 	}

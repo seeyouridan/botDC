@@ -2,37 +2,38 @@ const { DisTube } = require("distube");
 const { SpotifyPlugin } = require("@distube/spotify");
 const { SoundCloudPlugin } = require("@distube/soundcloud");
 const { YtDlpPlugin } = require("@distube/yt-dlp");
-
 const { EmbedBuilder } = require("discord.js");
 
 module.exports = (client) => {
 	client.distube = new DisTube(client, {
-		// leaveOnFinish: true,
-		// searchCooldown: 10,
-		// leaveOnEmpty: false,
-		// leaveOnStop: true,
 		emitNewSongOnly: true,
 		emitAddSongWhenCreatingQueue: false,
 		emitAddListWhenCreatingQueue: false,
-		plugins: [new SpotifyPlugin(), new SoundCloudPlugin(), new YtDlpPlugin()],
+		plugins: [
+			new SpotifyPlugin(),
+			new SoundCloudPlugin(),
+			new YtDlpPlugin({ update: true }),
+		],
 	});
 
 	const status = (queue) =>
-		`Volume: \`${queue.volume}%\` |  Filter: \`${
-			queue.filters.names.join(", ") || "Inactive"
+		`Volume: \`${queue.volume}%\` | Filter: \`${
+			queue.filters.names.join(", ") || "None"
 		}\` | Repeat: \`${
 			queue.repeatMode ? (queue.repeatMode === 2 ? "Queue" : "Track") : "Off"
 		}\` | Autoplay: \`${queue.autoplay ? "On" : "Off"}\``;
+
 	client.distube
 		.on("playSong", (queue, song) =>
 			queue.textChannel.send({
 				embeds: [
 					new EmbedBuilder()
 						.setColor("#a200ff")
+						.setTitle("🎶 Sedang Memutar")
 						.setDescription(
-							`🎶 | Playing: \`${song.name}\` - \`${
-								song.formattedDuration
-							}\`\nFrom: ${song.user}\n${status(queue)}`
+							`\`${song.name}\` - \`${song.formattedDuration}\`\nDari: ${
+								song.user
+							}\n\n${status(queue)}`
 						),
 				],
 			})
@@ -41,64 +42,41 @@ module.exports = (client) => {
 			queue.textChannel.send({
 				embeds: [
 					new EmbedBuilder()
-						.setColor("#a200ff")
+						.setColor("Green")
 						.setDescription(
-							`🎶 | Added \`${song.name}\` - \`${song.formattedDuration}\` to queue by: ${song.user}`
+							`✅ Ditambahkan ke antrian: \`${song.name}\` (\`${song.formattedDuration}\`) oleh ${song.user}`
 						),
 				],
 			})
 		)
-		.on("addList", (queue, playlist) =>
+		.on("finish", (queue) =>
 			queue.textChannel.send({
 				embeds: [
 					new EmbedBuilder()
-						.setColor("#a200ff")
-						.setDescription(
-							`🎶 | Added from \`${playlist.name}\` : \`${
-								playlist.songs.length
-							} \` queue tracks; \n${status(queue)}`
-						),
+						.setColor("Orange")
+						.setDescription("🏁 Musik telah selesai diputar semua."),
 				],
 			})
 		)
-		.on("error", (channel, e) => {
-			if (channel && typeof channel.send === "function") {
-				channel.send(`⛔ | Error: ${e.toString().slice(0, 1974)}`);
-			} else {
-				console.error(e);
-			}
-		})
 		.on("empty", (channel) => {
+			channel.send({
+				embeds: [
+					new EmbedBuilder()
+						.setColor("Red")
+						.setDescription("👋 Voice channel kosong, bot keluar otomatis."),
+				],
+			});
+		})
+		.on("error", (channel, err) => {
+			console.error(err);
 			if (channel && typeof channel.send === "function") {
 				channel.send({
 					embeds: [
 						new EmbedBuilder()
 							.setColor("Red")
-							.setDescription(
-								"⛔ | The voice channel is empty! Leaving the channel..."
-							),
+							.setDescription(`❌ Error: ${err.message}`),
 					],
 				});
 			}
-		})
-		.on("searchNoResult", (message, query) => {
-			if (message.channel && typeof message.channel.send === "function") {
-				message.channel.send({
-					embeds: [
-						new EmbedBuilder()
-							.setColor("Red")
-							.setDescription(`⛔ | No results found for: \`${query}\`!`),
-					],
-				});
-			}
-		})
-		.on("finish", (queue) =>
-			queue.textChannel.send({
-				embeds: [
-					new EmbedBuilder()
-						.setColor("#a200ff")
-						.setDescription("🏁 | The queue is finished!"),
-				],
-			})
-		);
+		});
 };

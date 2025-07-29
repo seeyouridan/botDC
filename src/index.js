@@ -20,21 +20,6 @@ const client = new Client({
 
 client.commands = new Collection();
 
-const { DisTube } = require("distube");
-const { SpotifyPlugin } = require("@distube/spotify");
-const { YtDlpPlugin } = require("@distube/yt-dlp");
-const { SoundCloudPlugin } = require("@distube/soundcloud");
-
-// client: instance dari Discord Client
-client.distube = new DisTube(client, {
-	emitNewSongOnly: true,
-	plugins: [
-		new SpotifyPlugin(),
-		new SoundCloudPlugin(),
-		new YtDlpPlugin({ update: true }),
-	],
-});
-
 const foldersPath = path.join(__dirname, "../commands");
 const getAllFiles = (dirPath, arrayOfFiles = []) => {
 	const files = fs.readdirSync(dirPath);

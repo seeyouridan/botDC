@@ -50,6 +50,17 @@ module.exports = {
 							{ name: "autoplay", value: "autoplay" }
 						)
 				)
+		)
+		.addSubcommand((sub) =>
+			sub
+				.setName("search")
+				.setDescription("Cari musik berdasarkan judul")
+				.addStringOption((opt) =>
+					opt
+						.setName("query")
+						.setDescription("Judul lagu yang ingin dicari")
+						.setRequired(true)
+				)
 		),
 	async execute(interaction, client) {
 		const option = interaction.options;
@@ -97,10 +108,24 @@ module.exports = {
 						});
 					}, 8000);
 
-					await client.distube.play(voiceChannel, query, {
-						textChannel: channel,
-						member,
-					});
+					try {
+						await client.distube.play(voiceChannel, query, {
+							textChannel: channel,
+							member,
+						});
+					} catch (error) {
+						console.error(error);
+						clearTimeout(timeout);
+
+						const failEmbed = new EmbedBuilder()
+							.setColor("Red")
+							.setDescription(
+								`❌ Gagal memutar lagu dengan query **"${query}"**.\n${error.message}`
+							);
+
+						return interaction.editReply({ content: "", embeds: [failEmbed] });
+					}
+
 					clearTimeout(timeout);
 					return;
 
@@ -169,9 +194,13 @@ module.exports = {
 					await interaction.editReply({ embeds: [embed] });
 					return;
 
-				default:
+				case "search":
 					await interaction.editReply({
-						content: "❌ Subcommand tidak dikenali.",
+						content: `🔍 Mencari dan memutar lagu: **${query}**...`,
+					});
+					await client.distube.play(voiceChannel, query, {
+						textChannel: channel,
+						member,
 					});
 					return;
 			}

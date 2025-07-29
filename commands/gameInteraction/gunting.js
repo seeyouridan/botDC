@@ -1,40 +1,56 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
-const { getBotChoice, determineWinner, getResultText } = require("../../src/utils/gameUtils");
+const {
+	getBotChoice,
+	determineWinner,
+	getResultText,
+} = require("../../src/utils/gameUtils");
+const {
+	isGameRunning,
+	updateGameStatus,
+} = require("../../src/utils/gameStatus");
 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName("gunting")
 		.setDescription("Pilih gunting dalam permainan"),
-	async execute(interaction, gameStatus) {
-		if (!gameStatus.isPlaying) {
+	async execute(interaction) {
+		const userId = interaction.user.id;
+
+		if (!isGameRunning(userId)) {
 			const embed = new EmbedBuilder()
 				.setColor("Red")
 				.setTitle("⚠️ Belum Mulai")
-				.setDescription("Permainan belum dimulai.\nKetik `/mulaigame` untuk mulai suit!")
+				.setDescription("Ketik `/mulaigame` dulu untuk mulai bermain.")
 				.setTimestamp();
 
-			return await interaction.reply({ embeds: [embed], ephemeral: true });
+			return interaction.reply({ embeds: [embed], ephemeral: true });
 		}
 
-		const playerChoice = "✂️ Gunting";
-		const botRaw = getBotChoice();
-		const botIcon = botRaw === "gunting" ? "✂️" : botRaw === "batu" ? "🪨" : "📄";
-		const result = determineWinner("gunting", botRaw);
+		const playerChoice = "gunting";
+		const botChoice = getBotChoice();
+		const result = determineWinner(playerChoice, botChoice);
 		const resultText = getResultText(result);
 
-		if (result.includes("draw")) gameStatus.draws++;
-		else if (result.includes("win")) gameStatus.wins++;
-		else gameStatus.losses++;
+		updateGameStatus(userId, result);
+
+		const emojiMap = {
+			kertas: "📄",
+			batu: "🪨",
+			gunting: "✂️",
+		};
 
 		const embed = new EmbedBuilder()
-			.setColor("#FFD700")
+			.setColor("Gold")
 			.setTitle("🧠 Hasil Suit")
 			.setDescription(
-				`**Kamu memilih:** ${playerChoice}\n` +
-				`**Bot memilih:** ${botIcon} ${botRaw}\n\n` +
-				`**${resultText}**`
+				`**Kamu memilih:** ${emojiMap[playerChoice]} Gunting\n` +
+					`**Bot memilih:** ${emojiMap[botChoice]} ${botChoice}\n\n` +
+					`**${resultText}**`
 			)
-			.setFooter({ text: interaction.user.username, iconURL: interaction.user.displayAvatarURL() })
+			.setFooter({
+				text: interaction.user.username,
+				iconURL: interaction.user.displayAvatarURL(),
+			})
 			.setTimestamp();
 
 		await interaction.reply({ embeds: [embed] });

@@ -1,32 +1,39 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
+const {
+	getGameStatus,
+	isGameRunning,
+	endGame,
+} = require("../../src/utils/gameStatus");
 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName("selesaigame")
 		.setDescription("Mengakhiri permainan dan menampilkan hasilnya"),
-	async execute(interaction, gameStatus) {
-		if (!gameStatus.isPlaying) {
+	async execute(interaction) {
+		const userId = interaction.user.id;
+
+		if (!isGameRunning(userId)) {
 			const embed = new EmbedBuilder()
 				.setColor("Red")
 				.setTitle("⚠️ Permainan Belum Dimulai")
 				.setDescription(
 					"Ketik `/mulaigame` dulu baru bisa mengakhiri permainan."
-				)
-				.setTimestamp();
+				);
 
 			return await interaction.reply({ embeds: [embed], ephemeral: true });
 		}
 
-		gameStatus.isPlaying = false;
+		const status = getGameStatus(userId);
+		endGame(userId); // reset status user
 
-		const resultEmbed = new EmbedBuilder()
-			.setColor("#90EE90")
+		const embed = new EmbedBuilder()
+			.setColor("Green")
 			.setTitle("🏁 Permainan Selesai!")
 			.setDescription(
-				`**Pemain:** <@${interaction.user.id}>\n` +
-					`**Menang:** ${gameStatus.wins}\n` +
-					`**Kalah:** ${gameStatus.losses}\n` +
-					`**Seri:** ${gameStatus.draws}`
+				`**Pemain:** <@${userId}>\n` +
+					`**Menang:** ${status.wins}\n` +
+					`**Kalah:** ${status.losses}\n` +
+					`**Seri:** ${status.draws}`
 			)
 			.setFooter({
 				text: "Terima kasih sudah bermain!",
@@ -34,6 +41,6 @@ module.exports = {
 			})
 			.setTimestamp();
 
-		await interaction.reply({ embeds: [resultEmbed] });
+		await interaction.reply({ embeds: [embed] });
 	},
 };

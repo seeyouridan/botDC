@@ -1,40 +1,50 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
-const { getBotChoice, determineWinner, getResultText } = require("../../src/utils/gameUtils");
+const {
+	getBotChoice,
+	determineWinner,
+	getResultText,
+} = require("../../src/utils/gameUtils");
+const {
+	isGameRunning,
+	updateGameStatus,
+} = require("../../src/utils/gameStatus");
 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName("kertas")
 		.setDescription("Pilih kertas dalam permainan"),
-	async execute(interaction, gameStatus) {
-		if (!gameStatus.isPlaying) {
+	async execute(interaction) {
+		const userId = interaction.user.id;
+
+		if (!isGameRunning(userId)) {
 			const embed = new EmbedBuilder()
 				.setColor("Red")
 				.setTitle("⚠️ Belum Mulai")
-				.setDescription(
-					"Permainan belum dimulai.\nKetik `/mulaigame` untuk mulai suit!"
-				)
+				.setDescription("Ketik `/mulaigame` dulu untuk mulai bermain.")
 				.setTimestamp();
 
-			return await interaction.reply({ embeds: [embed], ephemeral: true });
+			return interaction.reply({ embeds: [embed], ephemeral: true });
 		}
 
-		const playerChoice = "📄 Kertas";
+		const playerChoice = "kertas";
 		const botChoice = getBotChoice();
-		const result = determineWinner("kertas", botChoice);
+		const result = determineWinner(playerChoice, botChoice);
 		const resultText = getResultText(result);
-		const botIcon =
-			botChoice === "kertas" ? "📄" : botChoice === "batu" ? "🪨" : "✂️";
 
-		if (result.includes("draw")) gameStatus.draws++;
-		else if (result.includes("win")) gameStatus.wins++;
-		else gameStatus.losses++;
+		updateGameStatus(userId, result);
+
+		const emojiMap = {
+			kertas: "📄",
+			batu: "🪨",
+			gunting: "✂️",
+		};
 
 		const embed = new EmbedBuilder()
-			.setColor("#ADD8E6")
+			.setColor("Blue")
 			.setTitle("🧠 Hasil Suit")
 			.setDescription(
-				`**Kamu memilih:** ${playerChoice}\n` +
-					`**Bot memilih:** ${botIcon} ${botChoice}\n\n` +
+				`**Kamu memilih:** ${emojiMap[playerChoice]} Kertas\n` +
+					`**Bot memilih:** ${emojiMap[botChoice]} ${botChoice}\n\n` +
 					`**${resultText}**`
 			)
 			.setFooter({

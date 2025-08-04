@@ -1,4 +1,10 @@
-const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
+const {
+	SlashCommandBuilder,
+	EmbedBuilder,
+	ActionRowBuilder,
+	ButtonBuilder,
+	ButtonStyle,
+} = require("discord.js");
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -46,12 +52,15 @@ module.exports = {
 				},
 				{
 					name: "📢 Informasi Bot",
-					value: [
-						"• `/ping` — Cek latensi bot.",
-						"• `/jikon` — Lihat informasi JKT48 terbaru.",
-						"• `/server` — Info server saat ini.",
-						"• `/help` — Tampilkan menu bantuan ini.",
-					].join("\n") + "\n\u200B" + "\n\u200B",
+					value:
+						[
+							"• `/ping` — Cek latensi bot.",
+							"• `/jikon` — Lihat informasi JKT48 terbaru.",
+							"• `/server` — Info server saat ini.",
+							"• `/help` — Tampilkan menu bantuan ini.",
+						].join("\n") +
+						"\n\u200B" +
+						"\n\u200B",
 				}
 			)
 			.setFooter({
@@ -60,6 +69,13 @@ module.exports = {
 			})
 			.setFooter({ text: "ZeeBot - Selalu Siap Membantu!" });
 
-		await interaction.reply({ embeds: [helpEmbed] });
+		const row = new ActionRowBuilder().addComponents(
+			new ButtonBuilder()
+				.setLabel("🧾 GitHub")
+				.setStyle(ButtonStyle.Link)
+				.setURL("https://ollama.com/library/deepseek-r1")
+		);
+
+		await interaction.reply({ embeds: [helpEmbed], components: [row] });
 	},
 };

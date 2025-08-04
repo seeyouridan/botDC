@@ -38,11 +38,12 @@ module.exports = {
 			.setFooter({ text: "Powered by deepseek-r1:7b", iconURL: botAvatar })
 			.setTimestamp();
 
-		const row = new ActionRowBuilder().addComponents(
+		const row = new ActionRowBuilder()
+		.addComponents(
 			new ButtonBuilder()
-				.setLabel("🧾 Source Code")
+				.setLabel("🧾 Use Model")
 				.setStyle(ButtonStyle.Link)
-				.setURL("https://github.com/seeyouridan")
+				.setURL("https://ollama.com/library/deepseek-r1")
 		);
 
 		await interaction.editReply({ embeds: [embed], components: [row] });

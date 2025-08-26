@@ -3,10 +3,9 @@ require("dotenv").config({ path: "./.env" });
 const { Client, Collection, Events, GatewayIntentBits } = require("discord.js");
 const { gameStatus } = require("./utils/gameStatus");
 
-const DISCORD_BOT_TOKEN = process.env.DISCORD_BOT_TOKEN;
-
-const fs = require("node:fs");
-const path = require("node:path");
+const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
+const { getBotChoice, determineWinner, getResultText } = require("./utils/gameUtils");
+const { isGameRunning, updateGameStatus } = require("./utils/gameStatus");
 
 const client = new Client({
 	intents: [
@@ -19,6 +18,62 @@ const client = new Client({
 });
 
 client.commands = new Collection();
+
+client.on(Events.InteractionCreate, async (interaction) => {
+	if (!interaction.isButton()) return;
+
+	const userId = interaction.user.id;
+
+	if (!isGameRunning(userId)) {
+		return interaction.reply({
+			content: "⚠️ Kamu belum memulai game! Ketik `/mulaigame` dulu.",
+			ephemeral: true,
+		});
+	}
+
+	const playerChoice = interaction.customId;
+	const botChoice = getBotChoice();
+	const result = determineWinner(playerChoice, botChoice);
+	const resultText = getResultText(result);
+
+	updateGameStatus(userId, result);
+
+	const emojiMap = {
+		kertas: "📄",
+		batu: "🪨",
+		gunting: "✂️",
+	};
+
+	const resultEmbed = new EmbedBuilder()
+		.setColor("Blue")
+		.setTitle("🧠 Hasil Suit")
+		.setDescription(
+			`**Kamu memilih:** ${emojiMap[playerChoice]} ${playerChoice}\n` +
+			`**Bot memilih:** ${emojiMap[botChoice]} ${botChoice}\n\n` +
+			`**${resultText}**`
+		)
+		.setFooter({
+			text: interaction.user.username,
+			iconURL: interaction.user.displayAvatarURL(),
+		})
+		.setTimestamp();
+
+	const row = new ActionRowBuilder().addComponents(
+		new ButtonBuilder().setCustomId("kertas").setLabel("📄 Kertas").setStyle(ButtonStyle.Success),
+		new ButtonBuilder().setCustomId("gunting").setLabel("✂️ Gunting").setStyle(ButtonStyle.Danger),
+		new ButtonBuilder().setCustomId("batu").setLabel("🪨 Batu").setStyle(ButtonStyle.Secondary)
+	);
+
+	await interaction.update({
+		embeds: [resultEmbed],
+		components: [row],
+	});
+});
+
+const DISCORD_BOT_TOKEN = process.env.DISCORD_BOT_TOKEN;
+
+const fs = require("node:fs");
+const path = require("node:path");
 
 const foldersPath = path.join(__dirname, "../commands");
 const getAllFiles = (dirPath, arrayOfFiles = []) => {

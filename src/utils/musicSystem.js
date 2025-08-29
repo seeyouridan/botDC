@@ -17,11 +17,7 @@ module.exports = (client) => {
 	});
 
 	const status = (queue) =>
-		`Volume: \`${queue.volume}%\` | Filter: \`${
-			queue.filters.names.join(", ") || "None"
-		}\` | Repeat: \`${
-			queue.repeatMode ? (queue.repeatMode === 2 ? "Queue" : "Track") : "Off"
-		}\` | Autoplay: \`${queue.autoplay ? "On" : "Off"}\``;
+		`Volume: \`${queue.volume}%\``;
 
 	client.distube
 		.on("playSong", (queue, song) =>

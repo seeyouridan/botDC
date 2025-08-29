@@ -102,20 +102,52 @@ module.exports = {
 						content: `🔍 Mencari dan memproses lagu...`,
 					});
 
-					const timeout = setTimeout(() => {
-						interaction.editReply({
-							content: "⏳ Masih memproses, mohon tunggu sebentar lagi...",
-						});
+					let isPlaying = false;
+
+					const onPlaySong = async () => {
+						isPlaying = true;
+						clearTimeout(processingTimer);
+						clearTimeout(timeoutTimer);
+						client.distube.off("playSong", onPlaySong);
+					};
+
+					client.distube.on("playSong", onPlaySong);
+
+					const processingTimer = setTimeout(async () => {
+						if (!isPlaying) {
+							await interaction.editReply({
+								content: "⏳ Masih memproses, mohon tunggu sebentar lagi...",
+							});
+						}
 					}, 8000);
 
+					const timeoutTimer = setTimeout(async () => {
+						if (!isPlaying) {
+							client.distube.off("playSong", onPlaySong);
+
+							const failEmbed = new EmbedBuilder()
+								.setColor("Red")
+								.setDescription(
+									`❌ Gagal memutar lagu dengan query **"${query}"**.\nProses melebihi 15 detik tanpa hasil.`
+								);
+
+							return interaction.editReply({
+								content: "",
+								embeds: [failEmbed],
+							});
+						}
+					}, 15000);
+
 					try {
-						await client.distube.play(voiceChannel, query, {
+						client.distube.play(voiceChannel, query, {
 							textChannel: channel,
 							member,
 						});
 					} catch (error) {
 						console.error(error);
-						clearTimeout(timeout);
+						clearTimeout(processingTimer);
+						clearTimeout(timeoutTimer);
+						client.distube.off("playSong", onPlaySong);
 
 						const failEmbed = new EmbedBuilder()
 							.setColor("Red")
@@ -126,7 +158,6 @@ module.exports = {
 						return interaction.editReply({ content: "", embeds: [failEmbed] });
 					}
 
-					clearTimeout(timeout);
 					return;
 
 				case "volume":
